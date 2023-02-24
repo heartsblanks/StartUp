@@ -24,9 +24,6 @@ class Applications:
             self.treeview = ApplicationTreeview()
             self.treeview.create(app_window, scrollbar)
 
-            # Load applications from JSON
-            self.treeview.load_applications()
-
             # Add "Open" button
             open_button = ttk.Button(app_window, text="Open", command=self.open_selected)
             open_button.pack(padx=10, pady=5, side="bottom")
@@ -37,7 +34,11 @@ class Applications:
     def open_selected(self):
         try:
             # Get selected items
-            items = self.treeview.treeview.selection()
+            items = self.treeview.get_selected()
+            if not items:
+                # If no items are selected, show a message and return
+                tk.messagebox.showwarning("Warning", "Please select at least one application.")
+                return
 
             # Get locations of selected applications
             locations = []
