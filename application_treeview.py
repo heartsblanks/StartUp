@@ -31,11 +31,21 @@ class ApplicationTreeview:
                     children = app["Children"]
                     node = self.treeview.insert(parent, "end", text=name, open=False)
                     self.build_application_list(children, node)
-                    self.applications.append(name)
+                    self.applications.append({"name": name, "location": None})
                 else:
                     name = app["Name"]
-                    self.treeview.insert(parent, "end", text=name)
-                    self.applications.append(name)
-
+                    node = self.treeview.insert(parent, "end", text=name)
+                    self.applications.append({"name": name, "location": app.get("Location", None)})
         except Exception as e:
             print(f"An error occurred while building the application list: {e}")
+
+    def get_location(self, item):
+        for app in self.applications:
+            if app["name"] == self.treeview.item(item, "text"):
+                return app["location"]
+        return None
+
+    def get_applications(self):
+        return [{"name": app["name"], "location": app["location"]} for app in self.applications]
+
+
