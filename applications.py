@@ -59,3 +59,19 @@ class Applications:
 
         except Exception as e:
             logging.error(f"An error occurred while opening the selected applications: {e}")
+
+    def run_from_favourites(self, items):
+        try:
+            # Get locations of selected applications
+            locations = []
+            for item in items:
+                location = item["Location"]
+                if location:
+                    locations.append(location)
+
+            # Open selected applications
+            for location in locations:
+                subprocess.Popen(location)
+
+        except Exception as e:
+            logging.error(f"An error occurred while opening the selected applications: {e}")
