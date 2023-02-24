@@ -1,18 +1,28 @@
 import json
-from tkinter import ttk
+import logging
+import subprocess
+import tkinter as tk
+from tkinter import ttk, messagebox
 
 
 class FavouritesTreeview:
-    def __init__(self):
+    def __init__(self, master, favourites_frame):
+        self.favourites_frame = favourites_frame
         self.favourites = []
         self.treeview = None
+        self.scrollbar = None
+        self.create(master)
 
-    def create(self, master, scrollbar):
+    def create(self, master):
         try:
+            # Add scrollbar
+            self.scrollbar = ttk.Scrollbar(self.favourites_frame)
+            self.scrollbar.pack(side="right", fill="y")
+
             # Add treeview
-            self.treeview = ttk.Treeview(master, yscrollcommand=scrollbar.set)
+            self.treeview = ttk.Treeview(self.favourites_frame, yscrollcommand=self.scrollbar.set)
             self.treeview.pack(fill="both", padx=10, pady=10, expand=True)
-            scrollbar.config(command=self.treeview.yview)
+            self.scrollbar.config(command=self.treeview.yview)
 
             # Add columns
             self.treeview["columns"] = ("location")
@@ -36,7 +46,7 @@ class FavouritesTreeview:
                         self.favourites.append({"name": item_name, "location": item_location})
 
         except Exception as e:
-            print(f"An error occurred while creating the favourites treeview: {e}")
+            logging.error(f"An error occurred while creating the favourites treeview: {e}")
 
     def get_location(self, item):
         for fav in self.favourites:
