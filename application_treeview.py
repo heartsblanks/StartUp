@@ -1,5 +1,4 @@
 import json
-import tkinter as tk
 from tkinter import ttk
 
 
@@ -17,10 +16,10 @@ class ApplicationTreeview:
 
             # Add columns
             self.treeview["columns"] = ("location")
-            self.treeview.column("#0", width=200, minwidth=200, stretch=tk.NO)
-            self.treeview.column("location", width=400, minwidth=400, stretch=tk.NO)
-            self.treeview.heading("#0", text="Name", anchor=tk.W)
-            self.treeview.heading("location", text="Location", anchor=tk.W)
+            self.treeview.column("#0", width=200, minwidth=200, stretch="no")
+            self.treeview.column("location", width=400, minwidth=400, stretch="no")
+            self.treeview.heading("#0", text="Name", anchor="w")
+            self.treeview.heading("location", text="Location", anchor="w")
 
             # Load applications from JSON
             with open("Constants.json") as f:
@@ -49,3 +48,16 @@ class ApplicationTreeview:
 
         except Exception as e:
             print(f"An error occurred while building the application list: {e}")
+
+    def get_selected(self):
+        items = self.treeview.selection()
+        if not items:
+            return None
+        locations = []
+        for item in items:
+            location = self.get_location(item)
+            locations.append(location)
+        return locations
+
+    def get_location(self, item):
+        return self.treeview.set(item, "location")
