@@ -53,8 +53,8 @@ class Favourites:
             scrollbar.pack(side="right", fill="y")
 
             # Add favourites treeview
-            self.favourites_treeview = FavouritesTreeview()
-            self.favourites_treeview.create(favourites_window, scrollbar)
+            self.favourites_treeview = FavouritesTreeview(favourites_window)
+            self.favourites_treeview.create(self.favourites_treeview.treeview)
 
             # Add "Open" button
             open_button = ttk.Button(favourites_window, text="Open", command=self.favourites_treeview.open_selected)
