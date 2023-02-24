@@ -4,30 +4,22 @@ import subprocess
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+from treeview_base import TreeviewBase
 
-class FavouritesTreeview:
-    def __init__(self):
+
+class FavouritesTreeview(TreeviewBase):
+    def __init__(self, master, favourites_frame):
+        super().__init__(master, favourites_frame, columns=("location",))
         self.favourites = []
-        self.treeview = None
-        self.scrollbar = None
+        self.create()
 
-    def create(self, master):
+    def create(self):
         try:
-            # Add scrollbar
-            self.scrollbar = ttk.Scrollbar(master)
-            self.scrollbar.pack(side="right", fill="y")
-
-            # Add treeview
-            self.treeview = ttk.Treeview(master, yscrollcommand=self.scrollbar.set)
-            self.treeview.pack(fill="both", padx=10, pady=10, expand=True)
-            self.scrollbar.config(command=self.treeview.yview)
-
             # Add columns
-            self.treeview["columns"] = ("location")
-            self.treeview.column("#0", width=200, minwidth=200, stretch="no")
-            self.treeview.column("location", width=400, minwidth=400, stretch="no")
-            self.treeview.heading("#0", text="Name", anchor="w")
-            self.treeview.heading("location", text="Location/URL", anchor="w")
+            self.column("#0", width=200, minwidth=200, stretch="no")
+            self.column("location", width=400, minwidth=400, stretch="no")
+            self.heading("#0", text="Name", anchor="w")
+            self.heading("location", text="Location/URL", anchor="w")
 
             # Load favourites from JSON
             with open("Constants.json") as f:
@@ -35,12 +27,12 @@ class FavouritesTreeview:
                 favourites = data["Favourites"]
 
                 for category in favourites:
-                    category_node = self.treeview.insert("", "end", text=category["Name"], open=False)
+                    category_node = self.insert("", "end", text=category["Name"], open=False)
 
                     for item in category["Items"]:
                         item_name = item["Name"]
                         item_location = item.get("Location", item.get("Url", ""))
-                        self.treeview.insert(category_node, "end", text=item_name, values=(item_location,))
+                        self.insert(category_node, "end", text=item_name, values=(item_location,))
                         self.favourites.append({"name": item_name, "location": item_location})
 
         except Exception as e:
@@ -48,14 +40,14 @@ class FavouritesTreeview:
 
     def get_location(self, item):
         for fav in self.favourites:
-            if fav["name"] == self.treeview.item(item)["text"]:
+            if fav["name"] == self.item(item)["text"]:
                 return fav["location"]
         return None
 
     def open_selected(self):
         try:
             # Get selected items
-            items = self.treeview.selection()
+            items = self.selection()
 
             if not items:
                 # Show error message if no item is selected
