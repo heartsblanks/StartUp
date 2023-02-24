@@ -1,12 +1,20 @@
+import tkinter as tk
+from tkinter import ttk
+import logging
+import subprocess
+
+from application_treeview import ApplicationTreeview
+
+
 class Applications:
     def __init__(self):
         self.treeview = None
 
-    def run_from_favourites(self, items):
+    def run(self):
         try:
             # Create new window
             app_window = tk.Toplevel()
-            app_window.title("Favourites - " + items[0].get("Category", ""))
+            app_window.title("Applications")
             app_window.geometry("600x400")
 
             # Add scrollbar
@@ -15,7 +23,7 @@ class Applications:
 
             # Create Application Treeview
             self.treeview = ApplicationTreeview()
-            self.treeview.create_from_favourites(app_window, scrollbar, items)
+            self.treeview.create(app_window, scrollbar)
 
             # Add "Open" button
             open_button = ttk.Button(app_window, text="Open", command=self.open_selected)
@@ -35,19 +43,19 @@ class Applications:
 
             if not items:
                 # Show error message if no item is selected
-                messagebox.showerror("Error", "Please select at least one application to open.")
-            else:
-                # Open selected applications
-                for item in items:
-                    location = self.treeview.get_location(item)
-                    if location:
-                        self.open_application(location)
+                tk.messagebox.showerror("Error", "Please select at least one application to open.")
+                return
+
+            # Get locations of selected applications
+            locations = []
+            for item in items:
+                location = self.treeview.get_location(item)
+                if location:
+                    locations.append(location)
+
+            # Open selected applications
+            for location in locations:
+                subprocess.Popen(location)
 
         except Exception as e:
             logging.error(f"An error occurred while opening the selected applications: {e}")
-
-    def open_application(self, location):
-        try:
-            subprocess.Popen(location)
-        except Exception as e:
-            logging.error(f"An error occurred while opening the application: {e}")
