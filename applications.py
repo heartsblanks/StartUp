@@ -1,93 +1,119 @@
 import tkinter as tk
 from tkinter import ttk
-import webbrowser
 import json
-
-from check_json import JSONValidator
-
+import os
 
 class Applications:
     def __init__(self):
-        self.window = tk.Toplevel()
-        self.window.title("Applications")
-
-        # Read the JSON file
-        with open("Constants.json", "r") as f:
-            data = json.load(f)
-
-        # Get a list of all the applications
         self.applications = []
-        for app in data["Applications"]:
-            self.applications.append(app)
-            if "Children" in app:
-                for child in app["Children"]:
-                    self.applications.append(child)
-
-        # Create the checkboxes
-        self.checkbox_vars = []
-        self.checkboxes = []
-        for app in self.applications:
-            var = tk.BooleanVar()
-            self.checkbox_vars.append(var)
-            checkbox = ttk.Checkbutton(self.window, text=app["Name"], variable=var, command=self.update_child_checkboxes)
-            checkbox.pack()
-
-            if "Children" in app:
-                # Indent the child checkboxes
-                checkbox.configure(style="Indent1.TCheckbutton")
-
-                # Create the child checkboxes
-                for child in app["Children"]:
-                    child_var = tk.BooleanVar()
-                    self.checkbox_vars.append(child_var)
-                    child_checkbox = ttk.Checkbutton(self.window, text=child["Name"], variable=child_var, command=self.update_parent_checkbox)
-                    child_checkbox.pack()
-
-                    # Indent the child checkboxes
-                    child_checkbox.configure(style="Indent2.TCheckbutton")
-
-        # Create the "Open" button
-        open_button = ttk.Button(self.window, text="Open", command=self.open_selected)
-        open_button.pack(pady=10)
-
-    def update_child_checkboxes(self):
-        """
-        Updates the state of child checkboxes based on their parent checkbox state.
-        """
-        for app in self.applications:
-            if "Children" in app:
-                parent_checkbox_var = self.checkbox_vars[self.applications.index(app)]
-                for child in app["Children"]:
-                    child_checkbox_var = self.checkbox_vars[self.applications.index(child)]
-                    child_checkbox_var.set(parent_checkbox_var.get())
-
-    def update_parent_checkbox(self):
-        """
-        Updates the state of the parent checkbox based on the state of its child checkboxes.
-        """
-        for app in self.applications:
-            if "Children" in app:
-                parent_checkbox_var = self.checkbox_vars[self.applications.index(app)]
-                child_checkboxes_vars = [self.checkbox_vars[self.applications.index(child)] for child in app["Children"]]
-                if all(var.get() for var in child_checkboxes_vars):
-                    parent_checkbox_var.set(True)
-                elif any(var.get() for var in child_checkboxes_vars):
-                    parent_checkbox_var.set(True)
-                else:
-                    parent_checkbox_var.set(False)
-
-    def open_selected(self):
-        """
-        Opens the applications that the user has selected.
-        """
-        for app, var in zip(self.applications, self.checkbox_vars):
-            if var.get():
-                if "Children" in app:
-                    for child in app["Children"]:
-                        if child["Location"]:
-                            webbrowser.open(child["Location"])
-                elif app["Location"]:
-                    webbrowser.open(app["Location"])
+        self.create_application_list()
 
     def run(self):
-        self.window.mainloop()
+        try:
+            # Create new window
+            self.app_window = tk.Toplevel()
+            self.app_window.title("Applications")
+            self.app_window.geometry("600x400")
+
+            # Add scrollbar
+            scrollbar = ttk.Scrollbar(self.app_window)
+            scrollbar.pack(side="right", fill="y")
+
+            # Add treeview
+            self.treeview = ttk.Treeview(self.app_window, yscrollcommand=scrollbar.set)
+            self.treeview.pack(fill="both", padx=10, pady=10, expand=True)
+            scrollbar.config(command=self.treeview.yview)
+
+            # Add columns
+            self.treeview["columns"] = ("location")
+            self.treeview.column("#0", width=200, minwidth=200, stretch=tk.NO)
+            self.treeview.column("location", width=400, minwidth=400, stretch=tk.NO)
+            self.treeview.heading("#0", text="Name", anchor=tk.W)
+            self.treeview.heading("location", text="Location", anchor=tk.W)
+
+            # Add data to treeview
+            self.add_data_to_treeview(self.applications, "")
+
+            # Add "Open" button
+            open_button = ttk.Button(self.app_window, text="Open", command=self.open_selected)
+            open_button.pack(padx=10, pady=5, side="bottom")
+
+        except Exception as e:
+            print(f"An error occurred while running the Applications class: {e}")
+
+    def create_application_list(self):
+        try:
+            with open("Constants.json") as f:
+                data = json.load(f)
+                applications = data["Applications"]
+                self.build_application_list(applications)
+        except Exception as e:
+            print(f"An error occurred while creating the application list: {e}")
+
+    def build_application_list(self, applications, parent=None):
+        try:
+            for app in applications:
+                if "Children" in app:
+                    name = app["Name"]
+                    location = app["Location"]
+                    children = app["Children"]
+                    node = self.treeview.insert(parent, "end", text=name, open=False)
+                    self.build_application_list(children, node)
+                    self.applications.append({"name": name, "location": location, "parent": parent})
+                else:
+                    name = app["Name"]
+                    location = app["Location"]
+                    self.treeview.insert(parent, "end", text=name, values=(location,))
+                    self.applications.append({"name": name, "location": location, "parent": parent})
+        except Exception as e:
+            print(f"An error occurred while building the application list: {e}")
+
+    def add_data_to_treeview(self, data, parent):
+        try:
+            for item in data:
+                name = item["name"]
+                location = item["location"]
+                node = self.treeview.insert(item["parent"], "end", text=name, values=(location,))
+        except Exception as e:
+            print(f"An error occurred while adding data to treeview: {e}")
+
+    def open_selected(self):
+        try:
+            # Get selected items
+            items = self.treeview.selection()
+
+            # Get locations of selected applications
+            locations = []
+            for item in items:
+                location = self.get_location(item)
+                locations.append(location)
+
+            # Open selected applications
+            for location in locations:
+                self.open_application(location)
+
+        except Exception as e:
+            print(f"An error occurred while opening the selected applications: {e}")
+
+    def get_location(self, item):
+        try:
+            # Get location of item
+            values = self.treeview.item(item)["values"]
+            if values:
+                return values[0]
+            else:
+                # Get location of parent
+                parent = self.treeview.parent(item)
+                return self.get_location(parent)
+        except Exception as e:
+            print(f"An error occurred while getting the location of the selected item: {e}")
+
+    def open_application(self, location):
+        try:
+            self.app_window.withdraw() # Hide the applications window
+            app_window = tk.Toplevel()
+            app_window.title("Application")
+            app_window.geometry("600x400")
+            # Do something with the location
+        except Exception as e:
+            print(f"An error occurred while opening the application: {e}")
