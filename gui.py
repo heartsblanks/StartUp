@@ -11,7 +11,6 @@ from add_items import AddItems
 from delete_items import DeleteItems
 from broker_functions import BrokerFunctions
 from favourites import Favourites
-from favourites_treeview import FavouritesTreeview
 
 
 class InstallOrchestrationGUI:
@@ -63,4 +62,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     InstallOrchestrationGUI(root)
     root.mainloop()
-
