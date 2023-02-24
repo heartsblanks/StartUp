@@ -37,3 +37,33 @@ class FavouritesTreeview:
 
         except Exception as e:
             print(f"An error occurred while creating the favourites treeview: {e}")
+
+    def get_location(self, item):
+        for fav in self.favourites:
+            if fav["name"] == self.treeview.item(item)["text"]:
+                return fav["location"]
+        return None
+
+    def open_selected(self):
+        try:
+            # Get selected items
+            items = self.treeview.selection()
+
+            if not items:
+                # Show error message if no item is selected
+                messagebox.showerror("Error", "Please select at least one favourite to open.")
+                return
+
+            # Get locations of selected favourites
+            locations = []
+            for item in items:
+                location = self.get_location(item)
+                if location:
+                    locations.append(location)
+
+            # Open selected favourites
+            for location in locations:
+                subprocess.Popen(location)
+
+        except Exception as e:
+            logging.error(f"An error occurred while opening the selected favourites: {e}")
