@@ -1,0 +1,158 @@
+{
+  "Applications": [
+    {
+      "Name": "CMDER",
+      "Location": "",
+      "Children": [
+        {
+          "Name": "IIB",
+          "Location": "",
+          "Children": [
+            {
+              "Name": "DEV/TES",
+              "Location": ""
+            },
+            {
+              "Name": "INTE",
+              "Location": ""
+            },
+            {
+              "Name": "PROD",
+              "Location": ""
+            },
+            {
+              "Name": "PARA",
+              "Location": ""
+            }
+          ]
+        },
+        {
+          "Name": "DS",
+          "Location": ""
+        },
+        {
+          "Name": "SHELL",
+          "Location": ""
+        },
+        {
+          "Name": "JAVA",
+          "Location": ""
+        },
+        {
+          "Name": "CVS",
+          "Location": ""
+        },
+        {
+          "Name": "ROCHADE",
+          "Location": ""
+        },
+        {
+          "Name": "WINSCP",
+          "Location": ""
+        },
+        {
+          "Name": "HOST",
+          "Location": ""
+        }
+      ]
+    },
+    {
+      "Name": "JABBER",
+      "Location": ""
+    },
+    {
+      "Name": "IIB TOOLKIT",
+      "Location": ""
+    },
+    {
+      "Name": "IIB WORKSPACE",
+      "Location": ""
+    },
+    {
+      "Name": "MO71",
+      "Location": ""
+    }
+  ],
+  "Websites": [
+    {
+      "Name": "NEO",
+      "Url": "",
+      "Children": [
+        {
+          "Name": "TEST",
+          "Url": "",
+          "Children": [
+            {
+              "Name": "XR40",
+              "Url": ""
+            },
+            {
+              "Name": "NOTMQ",
+              "Url": ""
+            },
+            {
+              "Name": "KEYTAB",
+              "Url": ""
+            }
+          ]
+        },
+        {
+          "Name": "INTE",
+          "Url": "",
+          "Children": [
+            {
+              "Name": "XR40",
+              "Url": ""
+            },
+            {
+              "Name": "NOTMQ",
+              "Url": ""
+            },
+            {
+              "Name": "KEYTAB",
+              "Url": ""
+            }
+          ]
+        },
+        {
+          "Name": "PROD",
+          "Url": "",
+          "Children": [
+            {
+              "Name": "XR40",
+              "Url": ""
+            },
+            {
+              "Name": "NOTMQ",
+              "Url": ""
+            },
+            {
+              "Name": "KEYTAB",
+              "Url": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "HEK",
+      "Url": ""
+    },
+    {
+      "Name": "SNOW",
+      "Url": ""
+    }
+  ],
+  "Brokers": [
+    {
+      "Name": "",
+      "Type": ""
+    }
+  ],
+"Favourites": [
+    {
+      "Name": "IIB TOOLKIT",
+      "Location": ""
+    }
+  ]
+}
