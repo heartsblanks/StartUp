@@ -4,10 +4,10 @@ import subprocess
 import tkinter as tk
 from tkinter import ttk, messagebox
 from favourites_treeview import FavouritesTreeview
-from window_base import BaseWindow
+from window_base import WindowBase
 
 
-class FavouritesWindow(BaseWindow):
+class FavouritesWindow(WindowBase):
     def __init__(self, master):
         super().__init__(master, "Favourites")
 
