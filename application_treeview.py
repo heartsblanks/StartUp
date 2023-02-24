@@ -1,7 +1,6 @@
 import json
 from tkinter import ttk
 
-
 class ApplicationTreeview:
     def __init__(self):
         self.applications = []
@@ -16,10 +15,10 @@ class ApplicationTreeview:
 
             # Add columns
             self.treeview["columns"] = ("location")
-            self.treeview.column("#0", width=200, minwidth=200, stretch="no")
-            self.treeview.column("location", width=400, minwidth=400, stretch="no")
-            self.treeview.heading("#0", text="Name", anchor="w")
-            self.treeview.heading("location", text="Location", anchor="w")
+            self.treeview.column("#0", width=200, minwidth=200, stretch=tk.NO)
+            self.treeview.column("location", width=400, minwidth=400, stretch=tk.NO)
+            self.treeview.heading("#0", text="Name", anchor=tk.W)
+            self.treeview.heading("location", text="Location", anchor=tk.W)
 
             # Load applications from JSON
             with open("Constants.json") as f:
