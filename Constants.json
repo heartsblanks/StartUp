@@ -149,10 +149,49 @@
       "Type": ""
     }
   ],
-"Favourites": [
-    {
-      "Name": "IIB TOOLKIT",
-      "Location": ""
-    }
-  ]
+{
+  "Favourites": {
+    "Applications": [
+      {
+        "Name": "IIB TOOLKIT",
+        "Location": ""
+      },
+      {
+        "Name": "MO71",
+        "Location": ""
+      }
+    ],
+    "Websites": [
+      {
+        "Name": "NEO",
+        "Url": ""
+      },
+      {
+        "Name": "SNOW",
+        "Url": ""
+      }
+    ],
+    "On-Call": [
+      {
+        "Name": "On-Call Roster",
+        "Location": ""
+      }
+    ],
+    "Regular": [
+      {
+        "Name": "Outlook",
+        "Location": ""
+      },
+      {
+        "Name": "Excel",
+        "Location": ""
+      }
+    ],
+    "2SUP": [
+      {
+        "Name": "2SUP Queue",
+        "Location": ""
+      }
+    ]
+  }
 }
