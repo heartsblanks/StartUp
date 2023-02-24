@@ -6,21 +6,19 @@ from tkinter import ttk, messagebox
 
 
 class FavouritesTreeview:
-    def __init__(self, master, favourites_frame):
-        self.favourites_frame = favourites_frame
+    def __init__(self):
         self.favourites = []
         self.treeview = None
         self.scrollbar = None
-        self.create(master)
 
     def create(self, master):
         try:
             # Add scrollbar
-            self.scrollbar = ttk.Scrollbar(self.favourites_frame)
+            self.scrollbar = ttk.Scrollbar(master)
             self.scrollbar.pack(side="right", fill="y")
 
             # Add treeview
-            self.treeview = ttk.Treeview(self.favourites_frame, yscrollcommand=self.scrollbar.set)
+            self.treeview = ttk.Treeview(master, yscrollcommand=self.scrollbar.set)
             self.treeview.pack(fill="both", padx=10, pady=10, expand=True)
             self.scrollbar.config(command=self.treeview.yview)
 
@@ -41,7 +39,7 @@ class FavouritesTreeview:
 
                     for item in category["Items"]:
                         item_name = item["Name"]
-                        item_location = item["Location"] if "Location" in item else item["Url"]
+                        item_location = item.get("Location", item.get("Url", ""))
                         self.treeview.insert(category_node, "end", text=item_name, values=(item_location,))
                         self.favourites.append({"name": item_name, "location": item_location})
 
