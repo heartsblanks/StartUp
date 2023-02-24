@@ -1,5 +1,6 @@
 import json
 from tkinter import ttk
+import tkinter as tk
 
 class ApplicationTreeview:
     def __init__(self):
