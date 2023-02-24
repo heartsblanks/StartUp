@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+
 import json
 import logging
 import subprocess
@@ -11,7 +12,6 @@ from add_items import AddItems
 from delete_items import DeleteItems
 from broker_functions import BrokerFunctions
 from favourites import Favourites
-from favourites_treeview import FavouritesTreeview
 
 
 class InstallOrchestrationGUI:
@@ -40,17 +40,17 @@ class InstallOrchestrationGUI:
 
         # Create favourites checkbuttons
         favourites = Favourites(favourites_frame)
-        favourites.create_check_buttons()
 
         # Create "Open" button
-        open_button = ttk.Button(master, text="Open", command=favourites.open_favourites)
+        open_button = ttk.Button(favourites_frame, text="Open", command=favourites.open_favourites)
         open_button.pack(padx=10, pady=5, side="bottom")
 
-        # Create quit button
-        quit_button = ttk.Button(master, text="Quit", command=master.quit)
-        quit_button.pack(side="bottom", padx=10, pady=10)
-
         self.favourites = favourites
+
+        # Set focus to the first button
+        self.master.bind("<Return>", self.focus_next_widget)
+        self.master.bind("<KP_Enter>", self.focus_next_widget)
+        self.master.bind("<Down>", self.focus_next_widget)
 
     def create_button(self, name, cls):
         try:
@@ -59,8 +59,15 @@ class InstallOrchestrationGUI:
         except Exception as e:
             print(f"An error occurred while creating the {name} button: {e}")
 
-            
-if __name__ == "__main__":
+    def focus_next_widget(self, event):
+        event.widget.tk_focusNext().focus()
+
+
+def main():
     root = tk.Tk()
-    InstallOrchestrationGUI(root)
+    app = InstallOrchestrationGUI(root)
     root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
