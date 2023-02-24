@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-import logging
 import json
+from tkinter import messagebox
 
 from check_json import JSONValidator
 from applications import Applications
@@ -22,7 +22,7 @@ class InstallOrchestrationGUI:
         validator.validate()
 
         # Set up logging
-        logging.basicConfig(filename='install_orchestration.log', level=logging.ERROR)
+        # logging.basicConfig(filename='install_orchestration.log', level=logging.ERROR)
 
         # Create buttons
         self.create_button("Applications", Applications)
@@ -36,8 +36,12 @@ class InstallOrchestrationGUI:
         favourites_frame = ttk.LabelFrame(master, text="Favourites")
         favourites_frame.pack(fill="both", padx=10, pady=10)
 
-        # Create favourites buttons
+        # Create favourites checkbuttons
         self.create_favourites_check_buttons(favourites_frame)
+
+        # Create "Open" button
+        open_button = ttk.Button(master, text="Open", command=self.open_favourites)
+        open_button.pack(padx=10, pady=5, side="bottom")
 
         # Create quit button
         quit_button = ttk.Button(master, text="Quit", command=master.quit)
@@ -45,44 +49,42 @@ class InstallOrchestrationGUI:
 
     def create_button(self, name, cls):
         try:
-            button = ttk.Button(self.master, text=name, command=lambda: self.open_new_window(cls))
+            button = ttk.Button(self.master, text=name, command=cls().run)
             button.pack(fill="x", padx=10, pady=5)
         except Exception as e:
-            logging.error(f"An error occurred while creating the {name} button: {e}")
-
-    def open_new_window(self, cls):
-        try:
-            # Create new window
-            new_window = tk.Toplevel()
-            new_window.title(cls.__name__)
-            new_window.geometry("600x400")
-
-            # Call the class's run method
-            cls().run(new_window)
-
-        except Exception as e:
-            logging.error(f"An error occurred while opening {cls.__name__}: {e}")
+            print(f"An error occurred while creating the {name} button: {e}")
 
     def create_favourites_check_buttons(self, frame):
         try:
             with open("Constants.json") as f:
                 data = json.load(f)
                 favourites = data["Favourites"]
+                self.favourites_vars = []
                 for fav in favourites:
-                    check_button = ttk.Checkbutton(frame, text=fav["Name"], command=lambda loc=fav["Location"]: self.open_application(loc))
+                    var = tk.BooleanVar()
+                    check_button = ttk.Checkbutton(frame, text=fav["Name"], variable=var)
                     check_button.pack(fill="x", padx=10, pady=5)
+                    self.favourites_vars.append(var)
         except Exception as e:
-            logging.error(f"An error occurred while creating the favourites buttons: {e}")
+            print(f"An error occurred while creating the favourites buttons: {e}")
 
-    def open_application(self, location):
+    def open_favourites(self):
         try:
-            self.master.withdraw()  # Hide the main window
-            app_window = tk.Toplevel()
-            app_window.title("Application")
-            app_window.geometry("600x400")
-            # Do something with the location
+            # Get the selected favourites
+            selected = [i for i, v in enumerate(self.favourites_vars) if v.get()]
+            if not selected:
+                messagebox.showinfo("Error", "Please select at least one favourite to open.")
+                return
+
+            with open("Constants.json") as f:
+                data = json.load(f)
+                favourites = data["Favourites"]
+                selected_favourites = [favourites[i] for i in selected]
+                for fav in selected_favourites:
+                    location = fav["Location"]
+                    # Do something with the location, e.g. open the application
         except Exception as e:
-            logging.error(f"An error occurred while opening the application: {e}")
+            print(f"An error occurred while opening the selected favourites: {e}")
 
 
 if __name__ == "__main__":
