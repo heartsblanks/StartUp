@@ -1,26 +1,60 @@
+import json
+import logging
+import subprocess
 import tkinter as tk
 from tkinter import ttk
-import json
 
-from applications import Applications
+from window_base import WindowBase
 
 
-class ApplicationWindow:
+class ApplicationsWindow(WindowBase):
     def __init__(self):
-        self.favourites_data = None
-        self.applications = Applications()
+        super().__init__("Applications")
 
-    def create(self, master):
+    def create_form(self):
+        super().create_form()
+
+        location_label = ttk.Label(self.form_frame, text="Location:")
+        self.location_entry = ttk.Entry(self.form_frame)
+        location_label.grid(row=2, column=0, sticky="W")
+        self.location_entry.grid(row=2, column=1, sticky="W")
+
+    def create_buttons(self):
+        super().create_buttons()
+
+        self.add_items_button = ttk.Button(self.button_frame, text="Add Items", command=self.add_items)
+        self.add_items_button.pack(side="left", padx=5)
+
+    def add_items(self):
+        from add_items import AddItems
+
+        add_items_window = AddItems()
+        add_items_window.category_name = "Applications"
+        add_items_window.run()
+
+    def load_items(self):
         try:
-            # Load favourites data from Constants.json
             with open("Constants.json") as f:
                 data = json.load(f)
-                self.favourites_data = data.get("Favourites", {})
+                applications = data["Applications"]
 
-            # Create a button for each category
-            for category, items in self.favourites_data.items():
-                button = ttk.Button(master, text=category, command=lambda items=items: self.applications.run_from_favourites(items))
-                button.pack(fill="x", padx=10, pady=5)
+                for application in applications:
+                    name = application["Name"]
+                    location = application["Location"]
+                    self.treeview.insert("", "end", text=name, values=(location,))
 
         except Exception as e:
-            print(f"An error occurred while creating the Applications button: {e}")
+            logging.error(f"An error occurred while loading the applications: {e}")
+
+    def open_selected(self):
+        try:
+            # Get selected item
+            item = self.treeview.selection()[0]
+            name = self.treeview.item(item, "text")
+            location = self.treeview.item(item, "values")[0]
+
+            # Open selected application
+            subprocess.Popen(location)
+
+        except Exception as e:
+            logging.error(f"An error occurred while opening the selected application: {e}")
