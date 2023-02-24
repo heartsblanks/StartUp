@@ -1,53 +1,51 @@
 import json
-import logging
-import subprocess
-import tkinter as tk
-from tkinter import ttk, messagebox
-
-from treeview_base import TreeviewBase
+from tkinter import ttk
 
 
-class ApplicationTreeview(TreeviewBase):
-    def __init__(self, master):
-        super().__init__(master)
+class ApplicationTreeview:
+    def __init__(self):
+        self.applications = []
+        self.treeview = None
 
-        # Add columns
-        self.treeview["columns"] = ("location",)
-        self.treeview.column("#0", width=200, minwidth=200, stretch="no")
-        self.treeview.column("location", width=400, minwidth=400, stretch="no")
-        self.treeview.heading("#0", text="Name", anchor="w")
-        self.treeview.heading("location", text="Location", anchor="w")
-
-        # Load applications from JSON
+    def create(self, master, scrollbar):
         try:
+            # Add treeview
+            self.treeview = ttk.Treeview(master, yscrollcommand=scrollbar.set, show="tree")
+            self.treeview.pack(fill="both", padx=10, pady=10, expand=True)
+            scrollbar.config(command=self.treeview.yview)
+
+            # Load applications from JSON
             with open("Constants.json") as f:
                 data = json.load(f)
                 applications = data["Applications"]
-
-                for app in applications:
-                    name = app["Name"]
-                    location = app["Location"]
-                    self.treeview.insert("", "end", text=name, values=(location,))
-                    self.items.append({"name": name, "location": location})
+                self.build_application_list(applications, "")
 
         except Exception as e:
-            logging.error(f"An error occurred while creating the application treeview: {e}")
+            print(f"An error occurred while creating the application treeview: {e}")
 
-    def open_selected(self):
+    def build_application_list(self, applications, parent):
         try:
-            # Get selected items
-            items = self.treeview.selection()
-
-            if not items:
-                # Show error message if no item is selected
-                messagebox.showerror("Error", "Please select at least one application to open.")
-                return
-
-            # Open selected applications
-            for item in items:
-                location = self.get_location(item)
-                if location:
-                    subprocess.Popen(location)
-
+            for app in applications:
+                if "Children" in app:
+                    name = app["Name"]
+                    children = app["Children"]
+                    node = self.treeview.insert(parent, "end", text=name, open=False)
+                    self.build_application_list(children, node)
+                    self.applications.append({"name": name, "location": None})
+                else:
+                    name = app["Name"]
+                    node = self.treeview.insert(parent, "end", text=name)
+                    self.applications.append({"name": name, "location": app.get("Location", None)})
         except Exception as e:
-            logging.error(f"An error occurred while opening the selected applications: {e}")    
+            print(f"An error occurred while building the application list: {e}")
+
+    def get_location(self, item):
+        for app in self.applications:
+            if app["name"] == self.treeview.item(item, "text"):
+                return app["location"]
+        return None
+
+    def get_applications(self):
+        return [{"name": app["name"], "location": app["location"]} for app in self.applications]
+
+
