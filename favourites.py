@@ -4,6 +4,8 @@ import json
 import subprocess
 from tkinter import messagebox
 
+from favourites_treeview import FavouritesTreeview
+
 
 class Favourites:
     def __init__(self, favourites_frame):
