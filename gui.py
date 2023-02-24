@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 import json
-from tkinter import messagebox
 import logging
 import subprocess
 
@@ -40,15 +39,17 @@ class InstallOrchestrationGUI:
         favourites_frame.pack(fill="both", padx=10, pady=10)
 
         # Create favourites checkbuttons
-        self.create_favourites_check_buttons(favourites_frame)
+        favourites = Favourites(favourites_frame)
 
         # Create "Open" button
-        open_button = ttk.Button(master, text="Open", command=self.open_favourites)
+        open_button = ttk.Button(master, text="Open", command=favourites.open_favourites)
         open_button.pack(padx=10, pady=5, side="bottom")
 
         # Create quit button
         quit_button = ttk.Button(master, text="Quit", command=master.quit)
         quit_button.pack(side="bottom", padx=10, pady=10)
+
+        self.favourites = favourites
 
     def create_button(self, name, cls):
         try:
@@ -57,86 +58,9 @@ class InstallOrchestrationGUI:
         except Exception as e:
             print(f"An error occurred while creating the {name} button: {e}")
 
-    def create_favourites_check_buttons(self, frame):
-        try:
-            with open("Constants.json") as f:
-                data = json.load(f)
-                favourites = data["Favourites"]
-                self.favourites_vars = []
-                for fav in favourites:
-                    var = tk.BooleanVar()
-                    check_button = ttk.Checkbutton(frame, text=fav["Name"], variable=var)
-                    check_button.pack(fill="x", padx=10, pady=5)
-                    self.favourites_vars.append(var)
-        except Exception as e:
-            print(f"An error occurred while creating the favourites buttons: {e}")
 
-    def open_favourites(self):
-        try:
-            # Get the selected favourites
-            selected = [i for i, v in enumerate(self.favourites_vars) if v.get()]
-            if not selected:
-                messagebox.showinfo("Error", "Please select at least one favourite to open.")
-                return
-
-            with open("Constants.json") as f:
-                data = json.load(f)
-                favourites = data["Favourites"]
-                selected_favourites = [favourites[i] for i in selected]
-                for fav in selected_favourites:
-                    location = fav["Location"]
-                    subprocess.Popen(location)
-
-        except Exception as e:
-            print(f"An error occurred while opening the selected favourites: {e}")
-
-        # Create favourites window
-        favourites_window = tk.Toplevel(self.master)
-        favourites_window.title("Favourites")
-        favourites_window.geometry("600x400")
-
-        # Add scrollbar
-        scrollbar = ttk.Scrollbar(favourites_window)
-        scrollbar.pack()
-        # Add favourites treeview
-        favourites_treeview = FavouritesTreeview()
-        favourites_treeview.create(favourites_frame, scrollbar)
-
-        # Add "Open" button
-        open_button = ttk.Button(favourites_window, text="Open", command=self.open_selected_favourites)
-        open_button.pack(padx=10, pady=5, side="bottom")
-
-        # Add "Quit" button
-        quit_button = ttk.Button(favourites_window, text="Quit", command=favourites_window.destroy)
-        quit_button.pack(padx=10, pady=5, side="bottom")
-
-    def open_selected_favourites(self):
-        try:
-            # Get selected items
-            items = favourites_treeview.treeview.selection()
-
-            if not items:
-                # Show error message if no item is selected
-                tk.messagebox.showerror("Error", "Please select at least one favourite to open.")
-                return
-
-            # Get locations of selected favourites
-            locations = []
-            for item in items:
-                location = favourites_treeview.get_location(item)
-                if location:
-                    locations.append(location)
-
-            # Open selected favourites
-            for location in locations:
-                subprocess.Popen(location)
-
-        except Exception as e:
-            logging.error(f"An error occurred while opening the selected favourites: {e}")
-
-
-            
 if __name__ == "__main__":
-     root = tk.Tk()
-     InstallOrchestrationGUI(root)
-     root.mainloop()
+    root = tk.Tk()
+    InstallOrchestrationGUI(root)
+    root.mainloop()
+
