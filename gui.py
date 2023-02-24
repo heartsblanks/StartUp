@@ -89,3 +89,54 @@ class InstallOrchestrationGUI:
 
         except Exception as e:
             print(f"An error occurred while opening the selected favourites: {e}")
+
+        # Create favourites window
+        favourites_window = tk.Toplevel(self.master)
+        favourites_window.title("Favourites")
+        favourites_window.geometry("600x400")
+
+        # Add scrollbar
+        scrollbar = ttk.Scrollbar(favourites_window)
+        scrollbar.pack()
+        # Add favourites treeview
+        favourites_treeview = FavouritesTreeview()
+        favourites_treeview.create(favourites_frame, scrollbar)
+
+        # Add "Open" button
+        open_button = ttk.Button(favourites_window, text="Open", command=self.open_selected_favourites)
+        open_button.pack(padx=10, pady=5, side="bottom")
+
+        # Add "Quit" button
+        quit_button = ttk.Button(favourites_window, text="Quit", command=favourites_window.destroy)
+        quit_button.pack(padx=10, pady=5, side="bottom")
+
+    def open_selected_favourites(self):
+        try:
+            # Get selected items
+            items = favourites_treeview.treeview.selection()
+
+            if not items:
+                # Show error message if no item is selected
+                tk.messagebox.showerror("Error", "Please select at least one favourite to open.")
+                return
+
+            # Get locations of selected favourites
+            locations = []
+            for item in items:
+                location = favourites_treeview.get_location(item)
+                if location:
+                    locations.append(location)
+
+            # Open selected favourites
+            for location in locations:
+                subprocess.Popen(location)
+
+        except Exception as e:
+            logging.error(f"An error occurred while opening the selected favourites: {e}")
+
+
+            
+if __name__ == "__main__":
+     root = tk.Tk()
+     InstallOrchestrationGUI(root)
+     root.mainloop()
