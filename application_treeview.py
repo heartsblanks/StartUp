@@ -38,12 +38,14 @@ class ApplicationTreeview:
                     children = app["Children"]
                     node = self.treeview.insert(parent, "end", text=name, open=False)
                     self.build_application_list(children, node)
-                    self.applications.append({"name": name, "location": location})
+                    self.applications.append({"name": name, "location": location, "node": node})
                 else:
                     name = app["Name"]
                     location = app["Location"]
-                    self.treeview.insert(parent, "end", text=name, values=(location,))
-                    self.applications.append({"name": name, "location": location})
+                    node = self.treeview.insert(parent, "end", text=name, values=(location,))
+                    self.applications.append({"name": name, "location": location, "node": node})
+                    check_button = ttk.Checkbutton(self.treeview, variable=tk.BooleanVar(value=False))
+                    self.treeview.window_create(node, 2, window=check_button)
 
         except Exception as e:
             print(f"An error occurred while building the application list: {e}")
