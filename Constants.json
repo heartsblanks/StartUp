@@ -149,7 +149,6 @@
       "Type": ""
     }
   ],
-{
   "Favourites": {
     "Applications": [
       {
@@ -179,19 +178,21 @@
     ],
     "Regular": [
       {
-        "Name": "Outlook",
-        "Location": ""
-      },
-      {
-        "Name": "Excel",
-        "Location": ""
-      }
-    ],
-    "2SUP": [
-      {
-        "Name": "2SUP Queue",
-        "Location": ""
-      }
-    ]
-  }
+    "Name": "Outlook",
+    "Location": ""
+},
+{
+    "Name": "Excel",
+    "Location": ""
 }
+],
+"2SUP": [
+{
+    "Name": "2SUP Queue",
+    "Location": ""
+}
+]
+}
+}```
+
+       
