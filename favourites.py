@@ -1,31 +1,28 @@
-import logging
+import json
+import tkinter as tk
 from tkinter import ttk
-from favourites_treeview import FavouritesTreeview
 
 
 class Favourites:
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
+    def __init__(self, favourites_frame):
+        self.favourites = []
+        self.favourites_vars = []
+        self.favourites_frame = favourites_frame
 
-    def run(self):
-        self.logger.info("Favourites selected.")
+    def create_check_buttons(self):
+        try:
+            with open("Constants.json") as f:
+                data = json.load(f)
+                favourites = data["Favourites"]
+                for fav in favourites:
+                    var = tk.BooleanVar()
+                    check_button = ttk.Checkbutton(self.favourites_frame, text=fav["Name"], variable=var)
+                    check_button.pack(fill="x", padx=10, pady=5)
+                    self.favourites_vars.append(var)
+                    self.favourites.append({"name": fav["Name"], "location": fav["Location"]})
+        except Exception as e:
+            print(f"An error occurred while creating the favourites check buttons: {e}")
 
-        # Create favourites window
-        favourites_window = tk.Toplevel(self.master)
-        favourites_window.title("Favourites")
-        favourites_window.geometry("600x400")
-
-        # Add scrollbar
-        scrollbar = ttk.Scrollbar(favourites_window)
-        scrollbar.pack()
-        # Add favourites treeview
-        favourites_treeview = FavouritesTreeview()
-        favourites_treeview.create(favourites_window, scrollbar)
-
-        # Add "Open" button
-        open_button = ttk.Button(favourites_window, text="Open", command=favourites_treeview.open_selected)
-        open_button.pack(padx=10, pady=5, side="bottom")
-
-        # Add "Quit" button
-        quit_button = ttk.Button(favourites_window, text="Quit", command=favourites_window.destroy)
-        quit_button.pack(padx=10, pady=5, side="bottom")
+    def get_selected(self):
+        selected = [fav for fav, var in zip(self.favourites, self.favourites_vars) if var.get()]
+        return selected
