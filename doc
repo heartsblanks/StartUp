@@ -105,4 +105,32 @@ Additional Tips:
 	•	Add Visuals: Screenshots or flow diagrams for complex workflows can be very helpful.
 	•	Link Other Pages: Link to any relevant Confluence pages, such as coding standards, tool setup guides, or API documentation.
 
+If you’d prefer a textual flow instead of an image, here’s the detailed step-by-step flow for the source code review process before promoting code to UAT:
+
+Source Code Review Process for UAT Promotion
+
+	1.	Developer Completes Pre-Submission Checklist
+	•	Developer checks for code quality, formatting, documentation, and testing.
+	•	Ensures the code meets project standards and has sufficient test coverage.
+	2.	Developer Submits Code for Review
+	•	Code is submitted via a pull request or similar platform for review.
+	3.	Reviewer Assignment
+	•	A reviewer or review team is assigned based on expertise and availability.
+	4.	Review Steps
+	•	Functionality and Code Quality Check: Reviewer ensures the code meets functional requirements, is well-structured, and follows design principles.
+	•	Security Check: Reviewer verifies input validation, data handling, and dependency security.
+	•	Performance Optimization Check: Reviewer assesses resource usage, async processing, and optimizes database queries.
+	•	Testing Coverage Check: Reviewer confirms unit tests cover key functionality, edge cases, and error handling.
+	5.	Reviewer Provides Feedback
+	•	Reviewer provides specific, constructive feedback, highlighting areas of improvement.
+	6.	Developer Addresses Feedback
+	•	Developer makes necessary changes based on the feedback and resubmits the code.
+	7.	Reviewer Verifies Updates
+	•	Reviewer checks the updated code to ensure all issues are resolved.
+	•	If satisfied, reviewer marks the code as ‘approved.’
+	8.	Approval for UAT Promotion
+	•	Approved code is tagged, documented, and promoted to the UAT environment.
+
+This flow keeps both developers and reviewers aligned, ensuring that code meets quality, security, and performance standards before it’s promoted to UAT. Let me know if you’d like further customization on this structure.
+
 By creating this structured guide, you’ll provide both developers and reviewers with a comprehensive resource to support consistent, high-quality code reviews. This approach will help everyone follow best practices, maintain standards, and improve collaboration within the team.
